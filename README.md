@@ -23,3 +23,10 @@ GKYLZERO
 
 POSTGKYL
 - Download miniconda with, wget https://repo.anaconda.com/miniconda/Miniconda3-py311_24.4.0-0-Linux-x86_64.sh -O /gscratch/allocation/personal_folder_name/miniconda3/miniconda.sh
+- Run, bash /path/to/miniconda3/miniconda.sh -b -u -p /path/to/miniconda3 and rm -rf /path/to/miniconda3/miniconda.sh
+- Initialize with, /path/to/miniconda3/bin/conda init bash and /path/to/miniconda3/bin/conda init zsh
+- Now clone the repository with, git clone https://github.com/ammarhakim/postgkyl.git
+- Navigate to postgkyl directory, cd postgkyl
+- Run the following: conda env create -f environment.yml, conda activate pgkyl, and pip install -e .
+- You can activate postgkyl after reloading your terminal or doing source .bashrc with, conda activate pgkyl (this will need to be done every time before using postgkyl after loading up your terminal unless this command is added directly to your .bashrc file)
+- Postgkyl also installs a built-in python library that will be used in the postprocessing scripts here
