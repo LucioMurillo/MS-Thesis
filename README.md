@@ -17,7 +17,7 @@ GKYLZERO
 - On the same line as the other flags (--build-openblas=yes --build-superlu=yes) add --build-openmpi=yes. This tells the computer to install Open MPI along with the other dependencies.
 - Exit and run the file with, ./machines/mkdeps.[SYSTEM].sh, to install the dependencies.
 - Open the file configure.[SYSTEM].cpu.sh with, nano ./machines/configure.[SYSTEM].cpu.sh
-- Add the following to your file on the second line: --use-mpi=yes
+- Add the following to your file on the third line: --use-mpi=yes
 - Make sure you're in the gkylzero directory and then run ./machines/configure.[SYSTEM].cpu.sh. In the output you should see USE_MPI=1 as well as filepaths to the include and library directories of Open MPI.
 - Now install Gekyll with make install -j #. Replace the # with the number of cores you'd like to install with.
 
