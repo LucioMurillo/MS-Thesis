@@ -19,7 +19,7 @@ GKYLZERO
 - Open the file configure.[SYSTEM].cpu.sh with, nano ./machines/configure.[SYSTEM].cpu.sh
 - Add the following to your file on the second line: --use-mpi=yes
 - Make sure you're in the gkylzero directory and then run ./machines/configure.[SYSTEM].cpu.sh. In the output you should see USE_MPI=1 as well as filepaths to the include and library directories of Open MPI.
-- Now install Gekyll with make install -j # Replace the # with the number of cores you'd like to install with.
+- Now install Gekyll with make install -j #. Replace the # with the number of cores you'd like to install with.
 
 POSTGKYL
 - Download miniconda with, wget https://repo.anaconda.com/miniconda/Miniconda3-py311_24.4.0-0-Linux-x86_64.sh -O /gscratch/allocation/personal_folder_name/miniconda3/miniconda.sh
