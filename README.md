@@ -22,7 +22,7 @@ GKYLZERO
 - Now install Gekyll with make install -j #. Replace the # with the number of cores you'd like to install with.
 
 POSTGKYL
-- Download miniconda with, wget https://repo.anaconda.com/miniconda/Miniconda3-py311_24.4.0-0-Linux-x86_64.sh -O /gscratch/allocation/personal_folder_name/miniconda3/miniconda.sh
+- Download miniconda with, wget https://repo.anaconda.com/miniconda/Miniconda3-py311_24.4.0-0-Linux-x86_64.sh -O /path/to/miniconda3/miniconda.sh
 - Run, bash /path/to/miniconda3/miniconda.sh -b -u -p /path/to/miniconda3 and rm -rf /path/to/miniconda3/miniconda.sh
 - Initialize with, /path/to/miniconda3/bin/conda init bash and /path/to/miniconda3/bin/conda init zsh
 - Now clone the repository with, git clone https://github.com/ammarhakim/postgkyl.git
