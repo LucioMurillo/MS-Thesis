@@ -66,7 +66,6 @@ struct sheath_ctx {
   int num_frames;
   double dt_failure_tol;
   int num_failures_max;
-  int int_diag_calc_num;
 };
 
 static inline double sq(double x) { return x*x; }
@@ -221,7 +220,6 @@ create_ctx(void)
     .num_emission_species = 2,
     .t_end = 10000.0/ctx.omega_pe,
     .num_frames = 100,
-    .int_diag_calc_num = ctx.num_frames*100,
     .dt_failure_tol = 1.0e-6,
     .num_failures_max = 20,
   };
@@ -280,14 +278,14 @@ main(int argc, char **argv)
     ctx.gauss_tau, app_args.use_gpu);
   spectrum_model[0] = gkyl_emission_spectrum_chung_everhart_new(ctx.q0, ctx.phi, app_args.use_gpu);
   struct gkyl_emission_yield_model *yield_model[2];
-  yield_model[1] = gkyl_emission_yield_schou_srim_new(ctx.chargeIon, ctx.intWall, ctx.lorentz_norm, ctx.lorentz_E0, ctx.lorentz_tau,
+  yield_model[1] = gkyl_emission_yield_schou_new_graphite(ctx.chargeIon, ctx.intWall, ctx.lorentz_norm, ctx.lorentz_E0, ctx.lorentz_tau,
     ctx.lorentz_alpha, ctx.lorentz_beta, ctx.gauss_nuclear_norm, ctx.gauss_nuclear_E0, ctx.gauss_nuclear_tau, app_args.use_gpu);
   yield_model[0] = gkyl_emission_yield_furman_pivi_new(ctx.q0, ctx.deltahat_ts,
     ctx.Ehat_ts, ctx.t1, ctx.t2, ctx.t3, ctx.t4, ctx.s, app_args.use_gpu);
   struct gkyl_emission_elastic_model *elastic_model = gkyl_emission_elastic_furman_pivi_new(ctx.q0, ctx.P1_inf, ctx.P1_hat, ctx.E_hat,
     ctx.W, ctx.p, app_args.use_gpu);
   struct gkyl_bc_emission_ctx *bc_ctx = gkyl_bc_emission_new(ctx.num_emission_species,
-    1000/ctx.omega_pe, true, spectrum_model, yield_model, elastic_model, in_species);
+    1500/ctx.omega_pe, true, spectrum_model, yield_model, elastic_model, in_species);
 
   // electrons
   struct gkyl_vlasov_species elc = {
@@ -307,7 +305,7 @@ main(int argc, char **argv)
     .collisions =  {
       .collision_id = GKYL_LBO_COLLISIONS,
       .self_nu = eval_nu_elc,
-//      .fixed_temp_relax = true, // For BGK collisions
+//      .fixed_temp_relax = true,
       .ctx = &ctx,
       .num_cross_collisions = 1,
       .collide_with = { "ion" },
@@ -333,7 +331,7 @@ main(int argc, char **argv)
     },
     
     .num_diag_moments = 4,
-    .diag_moments = { GKYL_F_MOMENT_M0, GKYL_F_MOMENT_M1, GKYL_F_MOMENT_M2, GKYL_F_MOMENT_M3 },
+    .diag_moments = { "M0", "M1i", "M2", "M3i", "intM0" },
   };
 
   // ions
@@ -354,7 +352,7 @@ main(int argc, char **argv)
     .collisions =  {
       .collision_id = GKYL_LBO_COLLISIONS,
       .self_nu = eval_nu_ion,
-//      .fixed_temp_relax = true, // For BGK collisions
+//      .fixed_temp_relax = true,
       .ctx = &ctx,
       .num_cross_collisions = 1,
       .collide_with = { "elc" },
@@ -378,7 +376,7 @@ main(int argc, char **argv)
     },
     
     .num_diag_moments = 4,
-    .diag_moments = { GKYL_F_MOMENT_M0, GKYL_F_MOMENT_M1, GKYL_F_MOMENT_M2, GKYL_F_MOMENT_M3 },
+    .diag_moments = { "M0", "M1i", "M2", "M3i", "intM0" },
   };
 
   // Field.
@@ -387,7 +385,7 @@ main(int argc, char **argv)
     .poisson_bcs = {
       .lo_type = { GKYL_POISSON_DIRICHLET },
       .up_type = { GKYL_POISSON_DIRICHLET },
-      .lo_value = { ctx.phi_bias }, .up_value = { 0.0 }
+      .lo_value = {ctx.phi_bias }, .up_value = { 0.0 }
     },
   };
 
@@ -520,7 +518,7 @@ main(int argc, char **argv)
   gkyl_vlasov_app_cout(app, stdout, "Species collisional moments took %g secs\n", stat.species_coll_mom_tm);
   gkyl_vlasov_app_cout(app, stdout, "Total updates took %g secs\n", stat.total_tm);
 
-  gkyl_vlasov_app_cout(app, stdout, "Number of write calls %ld\n", stat.n_io);
+  gkyl_vlasov_app_cout(app, stdout, "Number of write calls %ld\n", stat.nio);
   gkyl_vlasov_app_cout(app, stdout, "IO time took %g secs \n", stat.io_tm);
 
   freeresources:
