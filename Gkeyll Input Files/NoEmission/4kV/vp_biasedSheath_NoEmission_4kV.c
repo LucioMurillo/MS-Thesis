@@ -39,6 +39,7 @@ struct sheath_ctx {
   int num_frames;
   double dt_failure_tol;
   int num_failures_max;
+  int int_diag_calc_num;
 };
 
 static inline double sq(double x) { return x*x; }
@@ -157,7 +158,7 @@ create_ctx(void)
     .lambda_D = sqrt(ctx.epsilon0*ctx.Te/(ctx.n0*GKYL_ELEMENTARY_CHARGE*GKYL_ELEMENTARY_CHARGE)),
     .mfp = 50.0*ctx.lambda_D,
     .nu_elc = ctx.vte/ctx.mfp,
-    .nu_ion = ctx.vte/ctx.mfp,
+    .nu_ion = ctx.vti/ctx.mfp,
     .Lx = 256.0*ctx.lambda_D,
     .Ls = 100.0*ctx.lambda_D,
     .omega_pe = sqrt(ctx.n0*GKYL_ELEMENTARY_CHARGE*GKYL_ELEMENTARY_CHARGE/(ctx.epsilon0*ctx.massElc)),
@@ -167,6 +168,7 @@ create_ctx(void)
     .num_emission_species = 1,
     .t_end = 10000.0/ctx.omega_pe,
     .num_frames = 100,
+    .int_diag_calc_num = ctx.num_frames*100,
     .dt_failure_tol = 1.0e-6,
     .num_failures_max = 20,
   };
@@ -270,7 +272,7 @@ main(int argc, char **argv)
     },
 
     .num_diag_moments = 4,
-    .diag_moments = { "M0", "M1i", "M2", "M3i", "intM0" },
+    .diag_moments = { GKYL_F_MOMENT_M0, GKYL_F_MOMENT_M1, GKYL_F_MOMENT_M2, GKYL_F_MOMENT_M3 },
   };
 
   // ions
@@ -314,7 +316,7 @@ main(int argc, char **argv)
     },
 
     .num_diag_moments = 4,
-    .diag_moments = { "M0", "M1i", "M2", "M3i", "intM0" },
+    .diag_moments = { GKYL_F_MOMENT_M0, GKYL_F_MOMENT_M1, GKYL_F_MOMENT_M2, GKYL_F_MOMENT_M3 },
   };
 
   // Field.
@@ -323,7 +325,7 @@ main(int argc, char **argv)
     .poisson_bcs = {
       .lo_type = { GKYL_POISSON_DIRICHLET },
       .up_type = { GKYL_POISSON_DIRICHLET },
-      .lo_value = {ctx.phi_bias }, .up_value = { 0.0 }
+      .lo_value = { ctx.phi_bias }, .up_value = { 0.0 }
     },
   };
 
@@ -456,7 +458,7 @@ main(int argc, char **argv)
   gkyl_vlasov_app_cout(app, stdout, "Species collisional moments took %g secs\n", stat.species_coll_mom_tm);
   gkyl_vlasov_app_cout(app, stdout, "Total updates took %g secs\n", stat.total_tm);
 
-  gkyl_vlasov_app_cout(app, stdout, "Number of write calls %ld\n", stat.nio);
+  gkyl_vlasov_app_cout(app, stdout, "Number of write calls %ld\n", stat.n_io);
   gkyl_vlasov_app_cout(app, stdout, "IO time took %g secs \n", stat.io_tm);
 
   freeresources:
