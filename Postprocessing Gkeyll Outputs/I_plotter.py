@@ -66,7 +66,7 @@ phi_b0 = np.linspace(0,10,100)
 gamma_w = 0.05541898835650642*phi_b0
 gamma_g = 0.13866926910245958*phi_b0
 
-# Theorectical Model
+# Theoretical Model
 I0 = 1e-3*0.5*np.pi*(0.003**2)*e*(1.1e23)*cs* \
     (1-np.exp(p_0(me,mi,Te,Ti,0,0) - (p(1e3*phi_b0,p_0(me,mi,Te,Ti,0,0)))))
 I0_g = 1e-3*0.5*np.pi*(0.003**2)*e*(1.1e23)*cs* \
